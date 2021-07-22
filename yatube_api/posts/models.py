@@ -58,16 +58,16 @@ class Comment(models.Model):
 
 
 class Follow(models.Model):
+    following = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='following',
+        verbose_name='Автор')
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='follower',
         verbose_name='Подписчик')
-    author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='following',
-        verbose_name='Автор')
     subscribe_date = models.DateTimeField('date published',
                                           auto_now_add=True,
                                           db_index=True)
@@ -77,7 +77,7 @@ class Follow(models.Model):
         verbose_name_plural = 'Подписчики'
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'author'], name='unique subscribers')]
+                fields=['following', 'user'], name='unique subscribers')]
 
     def __str__(self):
-        return f'{self.user} подписан на {self.author}'
+        return f'{self.user} подписан на {self.following}'
