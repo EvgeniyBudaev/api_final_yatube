@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, filters
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import (IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from django_filters.rest_framework import DjangoFilterBackend
 
 from posts.models import Post, Group, User, Follow, Comment
@@ -29,7 +30,7 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
 class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     queryset = Post.objects.all()
-    permission_classes = (IsAuthorOrReadOnly,)
+    permission_classes = (IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly,)
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['group', ]
 

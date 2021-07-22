@@ -14,13 +14,10 @@ class GroupSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     author = SlugRelatedField(slug_field='username', read_only=True)
-    group = serializers.SlugRelatedField(slug_field='slug',
-                                         queryset=Group.objects.all(),
-                                         required=False)
 
     class Meta:
         model = Post
-        fields = ('id', 'text', 'pub_date', 'author', 'image', 'group')
+        fields = ('id', 'text', 'pub_date', 'author', 'group')
         read_only_fields = ('author',)
 
 
