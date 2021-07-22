@@ -54,8 +54,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         post_id = self.kwargs.get('post_id')
-        new_queryset = Comment.objects.filter(post=post_id)
-        return new_queryset
+        return Comment.objects.filter(post=post_id)
 
 
 class FollowViewSet(viewsets.ModelViewSet):
@@ -70,5 +69,4 @@ class FollowViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = get_object_or_404(User, username=self.request.user.username)
-        queryset = user.following.all()
-        return queryset
+        return Follow.objects.filter(user=user).all()
