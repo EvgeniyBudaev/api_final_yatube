@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, filters
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
+from rest_framework.mixins import CreateModelMixin, ListModelMixin
 from django_filters.rest_framework import DjangoFilterBackend
 
 from posts.models import Post, Group, User, Follow, Comment
@@ -53,11 +54,11 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user, post=post)
 
     def get_queryset(self):
-        post_id = self.kwargs.get('post_id')
-        return Comment.objects.filter(post=post_id)
+        post = get_object_or_404(Post, pk=self.kwargs.get('post_id'))
+        return post.comments.all()
 
 
-class FollowViewSet(viewsets.ModelViewSet):
+class FollowViewSet(viewsets.GenericViewSet, CreateModelMixin, ListModelMixin):
     serializer_class = FollowSerializer
     queryset = Follow.objects.all()
     permission_classes = (IsAuthenticated,)
@@ -69,4 +70,4 @@ class FollowViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = get_object_or_404(User, username=self.request.user.username)
-        return Follow.objects.filter(user=user).all()
+        return user.follower
